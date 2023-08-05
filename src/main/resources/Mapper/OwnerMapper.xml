@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.mapper.OwnerMapper">
+    <resultMap id="BaseResultMap" type="com.zhang.pojo.Owner">
+    <id column="id" property="id" />
+    <result column="last_name" property="lastName" />
+    <result column="first_name" property="firstName" />
+    <result column="birth_date" property="birthDate" />
+        <collection property="cars" ofType="com.zhang.pojo.Car">
+            <id column="car_id" property="id" />
+            <id column="number" property="number" />
+            <id column="year" property="year" />
+            <id column="brand" property="brand" />
+            <id column="model" property="model" />
+        </collection>
+     </resultMap>
+
+    <sql id="Base_Column_List">
+        id, last_name, first_name, birth_date
+    </sql>
+
+    <select id="selectAllOwnerWithCars" resultMap="BaseResultMap">
+        SELECT o.id, o.first_name, o.last_name, o.birth_date, c.id AS car_id, c.number, c.year, c.brand, c.model
+        FROM owner o
+                 LEFT JOIN owner_car oc ON o.id = oc.owner_id
+                 LEFT JOIN car c ON oc.car_id = c.id
+    </select>
+
+    <select id="selectOwnerWithCarsById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT o.id, o.first_name, o.last_name, o.birth_date, c.id AS car_id, c.number, c.year, c.brand, c.model
+        FROM owner o
+                 LEFT JOIN owner_car oc ON o.id = oc.owner_id
+                 LEFT JOIN car c ON oc.car_id = c.id
+        WHERE o.id = #{id}
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT <include refid="Base_Column_List" />
+        FROM owner
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM owner
+    </select>
+
+    <insert id="insert" parameterType="com.zhang.pojo.Owner">
+        INSERT INTO owner (last_name, first_name, birth_date)
+        VALUES (#{lastName}, #{firstName}, #{birthDate})
+    </insert>
+
+    <update id="update" parameterType="com.zhang.pojo.Owner">
+        UPDATE owner
+        SET last_name = #{lastName}, first_name = #{firstName}, birth_date = #{birthDate}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM owner
+        WHERE id = #{id}
+    </delete>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>
